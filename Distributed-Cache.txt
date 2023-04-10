@@ -1,0 +1,41 @@
+
+
+Q.) Design a distributed Cache in Python. What would be your main concerns?
+
+The distributed cache is a cluster of servers which store the data. Rather than implementing a distributed cache from scratch,
+We can use a third party solution like Redis, Memechashed.
+
+Redis
+Redis is an in-memory key-value data store that can be used as a database, cache, and message broker.
+It shares the benefits of a local cache like fast access and low latency due to the data being stored in memory.
+
+a distributed cache is preferred over a single instance cache. This is because a single instance cache is a single point of failure. 
+If the cache goes down, the entire application will be affected. A distributed cache is a collection of cache instances. 
+If one cache instance goes down, the other instances can still serve the requests.A distributed cache can be scaled horizontally 
+by adding more cache instances. This will increase the memory available to the cache.
+
+Specification
+Each cluster node is a single Redis instance. The cluster nodes are connected to each other using a gossip protocol. 
+This allows the cluster to automatically detect the failure of a node and reconfigure itself to ensure that the data is still available.
+Hence, ever cluster node requires two open TCP ports: a Redis TCP port used to serve clients, e.g., 6379, and second port known as the 
+cluster bus port used to communicate with other nodes, e.g., 16379.
+
+Sharding
+In cluster mode, Redis automatically partitions the data across multiple nodes.Redis uses a concept called slot. A slot is a range of keys. 
+Each node is responsible for a subset of the slots. The number of slots is fixed at 16384. This means that each node is responsible for 
+16384/number of nodes keys. This ensures that the data is evenly distributed across the nodes. If a node is added or removed from the cluster
+the data is redistributed across the nodes. However, this redistribution is limited to the slots that the node is responsible for.
+This ensures that the data movement is limited and the performance of the cluster is not affected.
+
+Replication
+Since the data is partitioned across multiple nodes, it is important to ensure that the data is replicated across the nodes. This ensures that the 
+data is available even if a node goes down. Redis uses a master-slave replication model. The master node is responsible for the data. The slave nodes 
+are responsible for replicating the data from the master node. If the master node goes down, one of the slave nodes is promoted to be the new master node.
+This ensures that the data is still available.
+
+Eviction policies (LRU, LFU)
+Redis stores the data in memory, that is a limited resource. For applications running on high user base production environment, redis can run out of memory. 
+This is where eviction policies come in. Eviction policies are used to determine which data to evict when the memory limit is reached.
+By default, Redis uses the noeviction policy. This means that when the memory limit is reached, Redis will not evict any data. Instead, it will return an error.
+
+
