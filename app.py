@@ -54,7 +54,7 @@ def login():
         if row:            
             db_username = row['username']
             db_password = row['password']            
-            if password == db_password:
+            if db_username == username and password == db_password :
                 session['username'] = username
                 LOGGED_IN_USER.add(username)
                 LOGGED_IN_FREE_USER[username] = True
